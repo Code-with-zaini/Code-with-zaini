@@ -1,0 +1,21 @@
+# Compiled executables
+game
+game.exe
+
+# Object files
+*.o
+*.obj
+
+# Temporary files
+*.tmp
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
