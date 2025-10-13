@@ -192,6 +192,45 @@ void displayScoreboard() {
     std::cin.get();
 }
 
+// Inline scoreboard (no screen clear) shown right after a game when replay = no
+static void displayScoreboardInline() {
+    if (!g_scoreboardHead) {
+        std::cout << Ansi::dim << "No results yet. Play a game first!" << Ansi::reset << "\n\n";
+        std::cout << "Press Enter to continue...";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.get();
+        return;
+    }
+
+    std::cout << Ansi::cyan
+              << "-------------------------------------\n"
+              << "            SCOREBOARD\n"
+              << "-------------------------------------\n"
+              << Ansi::reset;
+
+    std::cout << std::left
+              << std::setw(16) << "Player Name"
+              << std::setw(12) << "Attempts"
+              << std::setw(10) << "Result" << "\n";
+    std::cout << "-------------------------------------\n";
+
+    const PlayerNode* current = g_scoreboardHead;
+    while (current) {
+        std::string resultIcon = current->didWin ? "✅ Won" : "❌ Lost";
+        std::cout << std::left
+                  << std::setw(16) << current->playerName
+                  << std::setw(12) << current->attemptsTaken
+                  << std::setw(10) << resultIcon
+                  << "\n";
+        current = current->next;
+    }
+
+    std::cout << "-------------------------------------\n\n";
+    std::cout << "Press Enter to continue...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
+}
+
 static int chooseDifficultyAndGetMax() {
     std::cout << "Choose difficulty:\n";
     std::cout << "1. Easy (1-50)\n";
@@ -256,6 +295,10 @@ void singlePlayerMode() {
         }
 
         playAgain = readYesNo("Play again in Single Player mode?");
+        if (!playAgain) {
+            std::cout << "\n";
+            displayScoreboardInline();
+        }
     } while (playAgain);
 }
 
@@ -334,6 +377,10 @@ void multiPlayerMode() {
         }
 
         playAgain = readYesNo("Play another Multiplayer round?");
+        if (!playAgain) {
+            std::cout << "\n";
+            displayScoreboardInline();
+        }
     } while (playAgain);
 }
 
